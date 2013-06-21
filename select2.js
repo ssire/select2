@@ -1105,8 +1105,8 @@ the specific language governing permissions and limitations under the Apache Lic
                 height = this.container.outerHeight(false),
                 width = this.container.outerWidth(false),
                 dropHeight = $dropdown.outerHeight(false),
-	            viewPortRight = $(window).scrollLeft() + $(window).width(),
-                viewportBottom = $(window).scrollTop() + $(window).height(),
+	            viewPortRight = $(window, this.opts.myDoc).scrollLeft() + $(window, this.opts.myDoc).width(),
+                viewportBottom = $(window, this.opts.myDoc).scrollTop() + $(window, this.opts.myDoc).height(),
                 dropTop = offset.top + height,
                 dropLeft = offset.left,
                 enoughRoomBelow = dropTop + dropHeight <= viewportBottom,
@@ -1221,7 +1221,8 @@ the specific language governing permissions and limitations under the Apache Lic
                 scroll = "scroll." + cid,
                 resize = "resize."+cid,
                 orient = "orientationchange."+cid,
-                mask, maskCss;
+                mask, maskCss, 
+                myDoc = this.opts.myDoc;
 
             this.container.addClass("select2-dropdown-open").addClass("select2-container-active");
 
@@ -1232,14 +1233,14 @@ the specific language governing permissions and limitations under the Apache Lic
             }
 
             // create the dropdown mask if doesnt already exist
-            mask = $("#select2-drop-mask");
+            mask = $("#select2-drop-mask", myDoc);
             if (mask.length == 0) {
-                mask = $(document.createElement("div"));
+                mask = $(myDoc.createElement("div"));
                 mask.attr("id","select2-drop-mask").attr("class","select2-drop-mask");
                 mask.hide();
                 mask.appendTo(this.body());
                 mask.on("mousedown touchstart click", function (e) {
-                    var dropdown = $("#select2-drop"), self;
+                    var dropdown = $("#select2-drop", myDoc), self;
                     if (dropdown.length > 0) {
                         self=dropdown.data("select2");
                         if (self.opts.selectOnBlur) {
@@ -1258,7 +1259,7 @@ the specific language governing permissions and limitations under the Apache Lic
             }
 
             // move the global id to the correct dropdown
-            $("#select2-drop").removeAttr("id");
+            $("#select2-drop", myDoc).removeAttr("id");
             this.dropdown.attr("id", "select2-drop");
 
             // show the elements
@@ -1277,15 +1278,15 @@ the specific language governing permissions and limitations under the Apache Lic
             this.container.parents().add(window).each(function () {
                 $(this).on(resize+" "+scroll+" "+orient, function (e) {
                     var maskCss=_makeMaskCss();
-                    $("#select2-drop-mask").css(maskCss);
+                    $("#select2-drop-mask", that.opts.myDoc).css(maskCss);
                     that.positionDropdown();
                 });
             });
 
             function _makeMaskCss() {
                 return {
-                    width  : Math.max(document.documentElement.scrollWidth,  $(window).width()),
-                    height : Math.max(document.documentElement.scrollHeight, $(window).height())
+                    width  : Math.max(myDoc.documentElement.scrollWidth,  $(window, myDoc).width()),
+                    height : Math.max(myDoc.documentElement.scrollHeight, $(window, myDoc).height())
                 }
             }
         },
@@ -1304,7 +1305,7 @@ the specific language governing permissions and limitations under the Apache Lic
 
             this.clearDropdownAlignmentPreference();
 
-            $("#select2-drop-mask").hide();
+            $("#select2-drop-mask", this.opts.myDoc).hide();
             this.dropdown.removeAttr("id"); // only the active dropdown has the select2-drop id
             this.dropdown.hide();
             this.container.removeClass("select2-dropdown-open");
@@ -1746,7 +1747,7 @@ the specific language governing permissions and limitations under the Apache Lic
                 "class": "select2-container"
             }).html([
                 "<a href='javascript:void(0)' onclick='return false;' class='select2-choice' tabindex='-1'>",
-                "   <span>&nbsp;</span><abbr class='select2-search-choice-close'></abbr>",
+                "   <span>&#160;</span><abbr class='select2-search-choice-close'></abbr>",
                 "   <div><b></b></div>" ,
                 "</a>",
                 "<input class='select2-focusser select2-offscreen' type='text'/>",
@@ -2280,7 +2281,7 @@ the specific language governing permissions and limitations under the Apache Lic
                 "    <ul class='select2-choices'>",
                 //"<li class='select2-search-choice'><span>California</span><a href="javascript:void(0)" class="select2-search-choice-close"></a></li>" ,
                 "  <li class='select2-search-field'>" ,
-                "    <input type='text' autocomplete='off' autocorrect='off' autocapitilize='off' spellcheck='false' class='select2-input'>" ,
+                "    <input type='text' autocomplete='off' autocorrect='off' autocapitilize='off' spellcheck='false' class='select2-input'/>" ,
                 "  </li>" ,
                 "</ul>" ,
                 "<div class='select2-drop select2-drop-multi select2-display-none'>" ,
