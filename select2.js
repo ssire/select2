@@ -3035,7 +3035,7 @@ the specific language governing permissions and limitations under the Apache Lic
                     multiple = opts.element.prop("multiple");
                 } else {
                     multiple = opts.multiple || false;
-                    if ("tags" in opts) {opts.multiple = multiple = true;}
+                    if ("tags" in opts) {opts.multiple = multiple;}
                 }
 
                 select2 = multiple ? new MultiSelect2() : new SingleSelect2();
